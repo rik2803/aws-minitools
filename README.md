@@ -1,5 +1,20 @@
 # A bunch (not yet but maybe one day) of one-shot scripts for AWS chores
 
+
+## `aws_manage_sg_rule.bash`: Add ingress rule to a SG whose name contains a string
+
+To add an _ingress_ rule to allow traffic on poer `1234` originating from `1.2.3.4/32`:
+
+```
+./aws_manage_sg_rule.bash my_sg authorize 1234 1.2.3.4/32
+```
+
+To remove that rule:
+
+```
+./aws_manage_sg_rule.bash my_sg revoke 1234 1.2.3.4/32
+```
+
 ## `aws_unsubscribe_loggroups.bash`
 
 Remove the subscription from loggroups that match a string in a list of string.
