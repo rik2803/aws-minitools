@@ -39,3 +39,28 @@ aws_toggle_access_key_state.bash <username> Inactive
 ```
 aws_toggle_access_key_state.bash <username> Active
 ```
+
+## `aws_create_timeboxed_role`
+
+This script creates a timeboxed IAM role for a given user on a given account.
+
+```bash
+$ aws_create_timeboxed_role --help
+    Usage: aws_create_timeboxed_role -u username -s nn -e mm
+      nn: starting hour of validity of role
+      mm: ending hour of validity of role
+      nn < mm
+```
+
+The above command will create or update a role on the account for which credentials are set
+in the shell environment it is running in, for a given user and a given timeframe within the
+current day.
+
+The trust policy allows the role to be assumed by users from the bastion account, the only
+AWS account in our organization where _real_ users live. The user configuration on the
+bastion account only allow users to assume roles on certain AWS accounts, and only the role
+that is specifically created for that user.
+
+Finally, the role contains one managed policy, granting the user permission to use AWS SSM
+to connect to EC2 instances on that account.
+
