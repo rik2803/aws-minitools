@@ -1,0 +1,93 @@
+#! /usr/bin/env bash
+
+usage() {
+  cat << EOF
+    Message: ${1:-No details available}
+    Usage: ${0} -u username -s nn -e mm
+      nn: starting hour of validity of role
+      mm: ending hour of validity of role
+      nn < mm
+EOF
+}
+
+is_num() {
+  [ "$1" ] && [ -z "${1//[0-9]}" ]
+}
+
+get_target_account_id() {
+  aws sts get-caller-identity --query "Account" --output text
+}
+
+
+user=""
+export hour_start=8
+export hour_end=12
+export today=$(date +"%Y-%m-%d")
+target_account_id=$(get_target_account_id)
+assume_role_policy_document_template="
+{
+  \"Version\": \"2012-10-17\",
+  \"Statement\": [
+    {
+      \"Effect\": \"Allow\",
+      \"Principal\": {
+        \"AWS\": \"arn:aws:iam::\${AWS_BASTION_ACCOUNT_ID}:root\"
+      },
+      \"Action\": \"sts:AssumeRole\",
+      \"Condition\": {
+        \"Bool\": {
+          \"aws:SecureTransport\": \"true\",
+          \"aws:MultiFactorAuthPresent\": \"true\"
+        },
+        \"NumericLessThan\": { \"aws:MultiFactorAuthAge\": \"43200\" },
+        \"DateGreaterThan\": {\"aws:CurrentTime\": \"\${today}T\${hour_start}:00:00Z\"},
+        \"DateLessThan\": {\"aws:CurrentTime\": \"\${today}T\${hour_end}:59:59Z\"}
+      }
+    }
+  ]
+}
+"
+
+while getopts "u:s:e:" opt; do
+  case ${opt} in
+    u)
+      user=${OPTARG}
+      ;;
+    s)
+      hour_start=${OPTARG}
+      ;;
+    e)
+      hour_end=${OPTARG}
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+### Validate input
+is_num ${hour_start} || { usage "Start hour should numeric"; exit 1; }
+is_num ${hour_end}  || { usage "End hour should be numeric"; exit 1; }
+[[ ${hour_start} -lt ${hour_end} ]] || { usage "Start hour should be smaller than end hour"; exit 1; }
+[[ -z ${user} ]] && { usage "Username is required"; exit 1; }
+[[ -z ${AWS_BASTION_ACCOUNT_ID} ]] && { usage "Environment variable AWS_BASTION_ACCOUNT_ID is required"; exit 1; }
+[[ -z ${AWS_MY_ORGANIZATION} ]] && { usage "Environment variable AWS_MY_ORGANIZATION is required"; exit 1; }
+
+### Create assume_role_policy_document
+assume_role_policy_document=$(echo ${assume_role_policy_document_template} | envsubst)
+
+### Action!!
+aws iam detach-role-policy \
+     --role-name "${user}-timeboxed-role" \
+     --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession > /dev/null 2>&1 || true
+
+aws iam delete-role --role-name "${user}-timeboxed-role" >/dev/null 2>&1 || true
+
+aws iam create-role --path "/${AWS_MY_ORGANIZATION}SSM/${user}/" \
+                    --role-name "${user}-timeboxed-role" \
+                    --assume-role-policy-document "${assume_role_policy_document}"
+
+aws iam attach-role-policy \
+     --role-name "${user}-timeboxed-role" \
+     --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession
