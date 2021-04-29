@@ -68,12 +68,12 @@ to connect to EC2 instances on that account.
 
 Update the retention period in days of the log group(s) in an AWS account.
 
-Update all logggroups to 180 days
+Update `all` logggroups to `180` days
 ```
 aws_update_retentiondays_loggroup.bash 180
 ```
 
-Update a single loggroup to 180 days
+Update a `single` loggroup to `180` days
 ```
 aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 ```
