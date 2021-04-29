@@ -64,3 +64,17 @@ that is specifically created for that user.
 Finally, the role contains one managed policy, granting the user permission to use AWS SSM
 to connect to EC2 instances on that account.
 
+## `aws_update_retentiondays_loggroup.bash`
+
+Update the retention period in days of the log group(s) in an AWS account.
+
+Update all logggroups to 180 days
+```
+aws_update_retentiondays_loggroup.bash 180
+```
+
+Update a single loggroup to 180 days
+```
+aws_update_retentiondays_loggroup.bash 180 <loggroup name>
+```
+
