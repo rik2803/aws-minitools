@@ -78,3 +78,24 @@ Update a single loggroup to 180 days
 aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 ```
 
+## `aws_upload_artifacts_to_codeartifact.bash`
+
+Upload the maven artifact to AWS Codeartifact using curl.
+
+###Set environment variables:
+* $DOMAIN = `domain codeartifact`
+* $ACCOUNT_ID = `AWS account id`
+* REGION
+* REPOSITORY
+
+###Upload all artifacts inside specified folder.
+
+* argument 1 = foldername
+* argument 2 = namespace (e.g `be, com,...`)
+* argument 3 = namespace2 (e.g `amazonaws,...`)
+* argument 4 = artifact id (e.g ` aws-java-sdk-glacier,...`)
+* argument 5 = version (e.g `1.19, 2.0,...`)
+
+```
+aws_upload_artifacts_to_codeartifact <foldername> <namespace> <namespace2> <artifact id> <version>
+```
