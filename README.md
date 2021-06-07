@@ -83,8 +83,8 @@ aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 Upload the maven artifact to AWS Codeartifact using curl.
 
 ###Set environment variables:
-* $DOMAIN = `domain codeartifact`
-* $ACCOUNT_ID = `AWS account id`
+* DOMAIN = `domain codeartifact`
+* ACCOUNT_ID = `AWS account id`
 * REGION
 * REPOSITORY
 
