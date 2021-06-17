@@ -83,7 +83,10 @@ aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 Download the artifacts from S3 and upload them to AWS Codeartifact.
 
 ###Requirements:
-Create textfile named: `S3Download.txt` (same folder)
+* `CODEARTIFACT_AUTH_TOKEN` set.
+* Create textfile named: `S3Download.txt` (same folder)
+* `S3_URL` needs to be set to the storage path of the bucket (e.g. `s3://.../home_nexus/sonatype-work/nexus/storage`)
+* `CODEARTIFACT_URL` needs to be set to the storage path of the bucket (e.g. `https://<artifact-domain>-<account-id>.d.codeartifact.eu-central-1.amazonaws.com/maven/../`)
 
 ####File structure
 
