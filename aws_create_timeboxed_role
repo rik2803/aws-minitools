@@ -84,8 +84,7 @@ aws iam detach-role-policy \
 
 aws iam delete-role --role-name "${user}-timeboxed-role" >/dev/null 2>&1 || true
 
-aws iam create-role --path "/${AWS_MY_ORGANIZATION}SSM/${user}/" \
-                    --role-name "${user}-timeboxed-role" \
+aws iam create-role --role-name "${user}-timeboxed-role" \
                     --assume-role-policy-document "${assume_role_policy_document}"
 
 aws iam attach-role-policy \
