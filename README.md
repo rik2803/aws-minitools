@@ -80,22 +80,26 @@ aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 
 ## `aws_upload_artifacts_to_codeartifact.bash`
 
-Upload the maven artifact to AWS Codeartifact using curl.
+Download the artifacts from S3 and upload them to AWS Codeartifact.
 
-###Set environment variables:
-* DOMAIN = `domain codeartifact`
-* ACCOUNT_ID = `AWS account id`
-* REGION
-* REPOSITORY
+###Requirements:
+Create textfile named: `S3Download.txt` (same folder)
+
+####File structure
+
+```
+1: File path inside S3 (from ..k/nexus/storage/) 
+2: Folder to copy to  
+3: namespace
+4: artifact
+5: version
+
+e.g.
+/ixor-external/com/google/guava/10.0.1.v201203051515/ com.google.guava-10.0.1.v201203051515 com.google guava 10.0.1.v201203051515
+```
 
 ###Upload all artifacts inside specified folder.
 
-* argument 1 = foldername
-* argument 2 = namespace (e.g `be, com,...`)
-* argument 3 = namespace2 (e.g `amazonaws,...`)
-* argument 4 = artifact id (e.g ` aws-java-sdk-glacier,...`)
-* argument 5 = version (e.g `1.19, 2.0,...`)
-
 ```
-aws_upload_artifacts_to_codeartifact <foldername> <namespace> <namespace2> <artifact id> <version>
+./aws_upload_artifacts_to_codeartifact.bash
 ```
