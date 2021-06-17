@@ -64,3 +64,45 @@ that is specifically created for that user.
 Finally, the role contains one managed policy, granting the user permission to use AWS SSM
 to connect to EC2 instances on that account.
 
+## `aws_update_retentiondays_loggroup.bash`
+
+Update the retention period in days of the log group(s) in an AWS account.
+
+Update `all` logggroups to `180` days
+```
+aws_update_retentiondays_loggroup.bash 180
+```
+
+Update a `single` loggroup to `180` days
+```
+aws_update_retentiondays_loggroup.bash 180 <loggroup name>
+```
+
+## `aws_upload_artifacts_to_codeartifact.bash`
+
+Download the artifacts from S3 and upload them to AWS Codeartifact.
+
+### Requirements:
+* `CODEARTIFACT_AUTH_TOKEN` set.
+* Create textfile named: `S3Download.txt` (same folder)
+* `S3_URL` needs to be set to the storage path of the bucket (e.g. `s3://.../home_nexus/sonatype-work/nexus/storage`)
+* `CODEARTIFACT_URL` needs to be set to the storage path of the bucket (e.g. `https://<artifact-domain>-<account-id>.d.codeartifact.eu-central-1.amazonaws.com/maven/../`)
+
+#### File structure
+
+```
+1: File path inside S3 (from ..k/nexus/storage/) 
+2: Folder to copy to  
+3: namespace
+4: artifact
+5: version
+
+e.g.
+/ixor-external/com/google/guava/10.0.1.v201203051515/ com.google.guava-10.0.1.v201203051515 com.google guava 10.0.1.v201203051515
+```
+
+### Upload all artifacts inside specified folder.
+
+```
+./aws_upload_artifacts_to_codeartifact.bash
+```
