@@ -90,3 +90,20 @@ aws iam create-role --role-name "${user}-timeboxed-role" \
 aws iam attach-role-policy \
      --role-name "${user}-timeboxed-role" \
      --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession
+
+cat << EOF
+The user should first add this JSON snippet to their ~/.assumerole file:
+
+    "timeboxed": {
+      "aws_profile": "ixor-bastion",
+      "aws_account": "${target_account_id}",
+      "aws_mfa_arn": "arn:aws:iam::${AWS_BASTION_ACCOUNT_ID}:mfa/${user}",
+      "aws_role": "arn:aws:iam::${target_account_id}:role/${user}-timeboxed-role",
+      "max_session_duration": "3600"
+    },
+
+And run this command to assume this role:
+
+assumerole timeboxed <otp-code>
+
+EOF
