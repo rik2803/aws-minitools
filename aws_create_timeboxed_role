@@ -92,6 +92,9 @@ aws iam attach-role-policy \
      --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession
 
 cat << EOF
+
+### USER INSTRUCTIONS ###
+
 The user should first add this JSON snippet to their ~/.assumerole file:
 
     "timeboxed": {
