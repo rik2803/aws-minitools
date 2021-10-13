@@ -101,7 +101,7 @@ The user should first add this JSON snippet to their ~/.assumerole file:
       "aws_profile": "ixor-bastion",
       "aws_account": "${target_account_id}",
       "aws_mfa_arn": "arn:aws:iam::${AWS_BASTION_ACCOUNT_ID}:mfa/${user}",
-      "aws_role": "arn:aws:iam::${target_account_id}:role/${user}-timeboxed-role",
+      "aws_role": "${user}-timeboxed-role",
       "max_session_duration": "3600"
     },
 
