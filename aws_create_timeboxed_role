@@ -3,7 +3,7 @@
 usage() {
   cat << EOF
     Message: ${1:-No details available}
-    Usage: ${0} -u username -s nn -e mm
+    Usage: ${0} -u username -s nn -e mm [-p policy]
       nn: starting hour of validity of role
       mm: ending hour of validity of role
       nn < mm
@@ -20,6 +20,7 @@ get_target_account_id() {
 
 
 user=""
+policy=""
 export hour_start=8
 export hour_end=12
 export today=$(date +"%Y-%m-%d")
@@ -48,7 +49,7 @@ assume_role_policy_document_template="
 }
 "
 
-while getopts "u:s:e:" opt; do
+while getopts "u:s:e:p:?" opt; do
   case ${opt} in
     u)
       user=${OPTARG}
@@ -58,6 +59,9 @@ while getopts "u:s:e:" opt; do
       ;;
     e)
       hour_end=${OPTARG}
+      ;;
+    p)
+      policy=${OPTARG}
       ;;
     *)
       usage
@@ -78,9 +82,18 @@ is_num ${hour_end}  || { usage "End hour should be numeric"; exit 1; }
 assume_role_policy_document=$(echo ${assume_role_policy_document_template} | envsubst)
 
 ### Action!!
-aws iam detach-role-policy \
-     --role-name "${user}-timeboxed-role" \
-     --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession > /dev/null 2>&1 || true
+
+### Remove attached policies
+for attached_role_policy in $(aws iam list-attached-role-policies --role-name  "${user}-timeboxed-role" --query 'AttachedPolicies[*].PolicyArn' --output text); do
+  aws iam detach-role-policy \
+       --role-name "${user}-timeboxed-role" \
+       --policy-arn "${attached_role_policy}" > /dev/null 2>&1 || true
+done
+
+### Remove inline policies
+for role_policy in $(aws iam list-role-policies --role-name "${user}-timeboxed-role" --query 'PolicyNames' --output text); do
+  aws iam delete-role-policy --role-name rikregular-timeboxed-role --policy-name "${role_policy}" > /dev/null 2>&1 || true
+done
 
 aws iam delete-role --role-name "${user}-timeboxed-role" >/dev/null 2>&1 || true
 
@@ -89,7 +102,13 @@ aws iam create-role --role-name "${user}-timeboxed-role" \
 
 aws iam attach-role-policy \
      --role-name "${user}-timeboxed-role" \
-     --policy-arn arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession
+     --policy-arn "arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession"
+
+if [[ -n ${policy} ]]; then
+  aws iam attach-role-policy \
+       --role-name "${user}-timeboxed-role" \
+       --policy-arn "arn:aws:iam::${target_account_id}:policy/${policy}"
+fi
 
 cat << EOF
 
