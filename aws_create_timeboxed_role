@@ -128,4 +128,10 @@ And run this command to assume this role:
 
 assumerole timeboxed <otp-code>
 
+For AWS Console access (if requested):
+  * Log in to the ixor-bastion account
+  * Switch role
+    * Account: ${target_account_id}
+    * Role: ${user}-timeboxed-role
+
 EOF
