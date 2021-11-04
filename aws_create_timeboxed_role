@@ -114,7 +114,9 @@ cat << EOF
 
 ### USER INSTRUCTIONS ###
 
-The user should first add this JSON snippet to their ~/.assumerole file:
+The user should first add this JSON snippet to their ~/.assumerole file (or update the snippet
+if the user requested timeboxed access before and did not remove it from the file - which is
+OK):
 
     "timeboxed": {
       "aws_profile": "ixor-bastion",
