@@ -7,6 +7,9 @@ usage() {
       nn: starting hour of validity of role
       mm: ending hour of validity of role
       nn < mm
+
+    -p <policy> accepts full ARNs or the policy name. In the first case, the full arn
+    is used, in the other case, a policy ARN with the account-id will be constructed from the string.
 EOF
 }
 
@@ -105,9 +108,14 @@ aws iam attach-role-policy \
      --policy-arn "arn:aws:iam::${target_account_id}:policy/${AWS_MY_ORGANIZATION}SSM/SSMSession"
 
 if [[ -n ${policy} ]]; then
+  if [[ ${policy} =~ arn:aws:.* ]]; then
+    :
+  else
+    policy="arn:aws:iam::${target_account_id}:policy/${policy}"
+  fi
   aws iam attach-role-policy \
        --role-name "${user}-timeboxed-role" \
-       --policy-arn "arn:aws:iam::${target_account_id}:policy/${policy}"
+       --policy-arn "${policy}"
 fi
 
 cat << EOF
