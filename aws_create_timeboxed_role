@@ -3,7 +3,7 @@
 usage() {
   cat << EOF
     Message: ${1:-No details available}
-    Usage: ${0} -u username -s nn -e mm [-p policy]
+    Usage: ${0} -u username -s nn -e mm [-p policy] [-a account-name]
       nn: starting hour of validity of role
       mm: ending hour of validity of role
       nn < mm
@@ -24,9 +24,10 @@ get_target_account_id() {
 
 user=""
 policy=""
-export hour_start=8
-export hour_end=12
-export today=$(date +"%Y-%m-%d")
+account_name=""
+hour_start=8
+hour_end=12
+today=$(date +"%Y-%m-%d")
 target_account_id=$(get_target_account_id)
 assume_role_policy_document_template="
 {
@@ -52,7 +53,7 @@ assume_role_policy_document_template="
 }
 "
 
-while getopts "u:s:e:p:?" opt; do
+while getopts "u:s:e:p:?a:?" opt; do
   case ${opt} in
     u)
       user=${OPTARG}
@@ -65,6 +66,9 @@ while getopts "u:s:e:p:?" opt; do
       ;;
     p)
       policy=${OPTARG}
+      ;;
+    a)
+      account_name=${OPTARG}
       ;;
     *)
       usage
@@ -80,6 +84,7 @@ is_num ${hour_end}  || { usage "End hour should be numeric"; exit 1; }
 [[ -z ${user} ]] && { usage "Username is required"; exit 1; }
 [[ -z ${AWS_BASTION_ACCOUNT_ID} ]] && { usage "Environment variable AWS_BASTION_ACCOUNT_ID is required"; exit 1; }
 [[ -z ${AWS_MY_ORGANIZATION} ]] && { usage "Environment variable AWS_MY_ORGANIZATION is required"; exit 1; }
+[[ -z ${account_name} ]] && account_name="${target_account_id}"
 
 ### Create assume_role_policy_document
 assume_role_policy_document=$(echo ${assume_role_policy_document_template} | envsubst)
@@ -120,7 +125,7 @@ fi
 
 cat << EOF
 
-### USER INSTRUCTIONS ###
+### USER INSTRUCTIONS FOR ACCOUNT ${account_name} ###
 
 The user should first add this JSON snippet to their ~/.assumerole file (or update the snippet
 if the user requested timeboxed access before and did not remove it from the file - which is
