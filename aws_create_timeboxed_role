@@ -24,10 +24,10 @@ get_target_account_id() {
 
 user=""
 policy=""
-account_name=""
-hour_start=8
-hour_end=12
-today=$(date +"%Y-%m-%d")
+export account_name=""
+export hour_start=8
+export hour_end=12
+export today=$(date +"%Y-%m-%d")
 target_account_id=$(get_target_account_id)
 assume_role_policy_document_template="
 {
