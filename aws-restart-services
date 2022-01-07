@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+
+usage() {
+  cat << EOF
+    Message: ${1:-No details available}
+    Usage: ${0} ecs-cluster-name service ...
+EOF
+}
+
+### Validate input
+aws sts get-caller-identity >/dev/null 2>&1 || { usage "No active AWS credentials"; exit 1; }
+[[ -z ${1} ]] && { usage "First argument should be ECS cluster name"; exit 1; }
+
+### Action!!
+cluster_name=${1}; shift
+while [[ -n ${1} ]]; do
+  service_name=${1}; shift
+  AWS_PAGER="" aws ecs update-service --service "${service_name}" --cluster "${cluster_name}" --force-new-deployment
+done
