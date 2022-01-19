@@ -1,6 +1,18 @@
 # A bunch (not yet but maybe one day) of one-shot scripts for AWS chores
 
 
+## `aws-list-active-images-in-ecs.bash`: Show all active ECS services and all docker images used in each of those services
+
+This command outputs all active ECS services and all docker images used in each of those services for a given cluster.
+
+```bash
+$ ./aws-list-active-images-in-ecs.bash myCluster
+myService1: myImage1:tag1
+myService2: myImage2a:tag2a
+myService2: myImage2b:tag2b
+myService3: myImage3:tag3
+```
+
 ## `aws_manage_sg_rule.bash`: Add ingress rule to a SG whose name contains a string
 
 To add an _ingress_ rule to allow traffic on poer `1234` originating from `1.2.3.4/32`:
