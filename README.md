@@ -1,6 +1,8 @@
 # A bunch (not yet but maybe one day) of one-shot scripts for AWS chores
 
 
+## `aws-remove-events-rule.bash`: Remove all targets from the rule and the rule itself
+
 ## `aws-list-active-images-in-ecs.bash`: Show all active ECS services and all docker images used in each of those services
 
 This command outputs all active ECS services and all docker images used in each of those services for a given cluster.
@@ -13,9 +15,9 @@ myService2: myImage2b:tag2b
 myService3: myImage3:tag3
 ```
 
-## `aws_manage_sg_rule.bash`: Add ingress rule to a SG whose name contains a string
+## `aws_manage_sg_rule.bash`: Add ingress rule to an SG whose name contains a string
 
-To add an _ingress_ rule to allow traffic on poer `1234` originating from `1.2.3.4/32`:
+To add an _ingress_ rule to allow traffic on port `1234` originating from `1.2.3.4/32`:
 
 ```
 ./aws_manage_sg_rule.bash my_sg authorize 1234 1.2.3.4/32
@@ -29,11 +31,11 @@ To remove that rule:
 
 ## `aws_unsubscribe_loggroups.bash`
 
-Remove the subscription from loggroups that match a string in a list of string.
+Remove the subscription from log groups that match a string in a list of string.
 
 ## `aws_delete_loggroups_older_than.bash`
 
-Remove CloudWatch loggroups with names matching a string and created more than
+Remove CloudWatch log groups with names matching a string and created more than
 the given number of seconds (defaults to 1 week) ago.
 
 ```
@@ -54,7 +56,7 @@ aws_toggle_access_key_state.bash <username> Active
 
 ## `aws_create_timeboxed_role`
 
-This script creates a timeboxed IAM role for a given user on a given account.
+This script creates a time-boxed IAM role for a given user on a given account.
 
 ```bash
 $ aws_create_timeboxed_role --help
@@ -80,12 +82,12 @@ to connect to EC2 instances on that account.
 
 Update the retention period in days of the log group(s) in an AWS account.
 
-Update `all` logggroups to `180` days
+Update `all` log groups to `180` days
 ```
 aws_update_retentiondays_loggroup.bash 180
 ```
 
-Update a `single` loggroup to `180` days
+Update a `single` log group to `180` days
 ```
 aws_update_retentiondays_loggroup.bash 180 <loggroup name>
 ```
@@ -96,7 +98,7 @@ Download the artifacts from S3 and upload them to AWS Codeartifact.
 
 ### Requirements:
 * `CODEARTIFACT_AUTH_TOKEN` set.
-* Create textfile named: `S3Download.txt` (same folder)
+* Create text file named: `S3Download.txt` (same folder)
 * `S3_URL` needs to be set to the storage path of the bucket (e.g. `s3://.../home_nexus/sonatype-work/nexus/storage`)
 * `CODEARTIFACT_URL` needs to be set to the storage path of the bucket (e.g. `https://<artifact-domain>-<account-id>.d.codeartifact.eu-central-1.amazonaws.com/maven/../`)
 
