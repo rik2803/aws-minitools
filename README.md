@@ -1,6 +1,8 @@
 # A bunch (not yet but maybe one day) of one-shot scripts for AWS chores
 
 
+## `aws-get-ses-account-suppression-list.bash`: Retrieve complete SES account suppression list
+
 ## `aws-remove-events-rule.bash`: Remove all targets from the rule and the rule itself
 
 ## `aws-list-active-images-in-ecs.bash`: Show all active ECS services and all docker images used in each of those services
