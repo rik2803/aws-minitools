@@ -1,5 +1,16 @@
-# A bunch (not yet but maybe one day) of one-shot scripts for AWS chores
+# A bunch of one-shot scripts for AWS chores
 
+## `aws-restart-all-services`: Perform a forced deployment on all services in a given cluster
+
+```bash
+aws-restart-all-services <clustername>
+```
+
+## `aws-restart-services`: Perform a forced deployment on a list of services in a given cluster
+
+```bash
+aws-restart-services <clustername> <servicename1> [<servicename2> ...]
+```
 
 ## `aws-get-ses-account-suppression-list.bash`: Retrieve complete SES account suppression list
 
