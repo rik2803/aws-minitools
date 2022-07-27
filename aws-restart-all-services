@@ -1,0 +1,29 @@
+#! /usr/bin/env bash
+
+set -e
+set -o pipefail
+
+source "./lib.bash"
+
+usage() {
+  cat << EOF
+    Message: ${1:-No details available}
+    Usage: ${0} ecs-cluster-name
+EOF
+}
+
+### Validate input
+aws sts get-caller-identity >/dev/null 2>&1 || { usage "No active AWS credentials"; exit 1; }
+[[ -z ${1} ]] && { usage "First argument should be ECS cluster name"; exit 1; }
+cluster_name=${1}; shift
+
+### Action!!
+info "Getting service ARNs ..."
+ALL_SERVICE_ARNS=$(aws ecs list-services --cluster "${cluster_name}" --query "serviceArns[]" --output text)
+
+for service_arn in ${ALL_SERVICE_ARNS}; do
+  service_name=$(aws ecs describe-services --cluster "${cluster_name}" --services "${service_arn}" --query "services[].serviceName" --output text)
+  info "Force new deployment of service \"${service_name}\" in cluster \"${cluster_name}\"."
+  AWS_PAGER="" aws ecs update-service --service "${service_name}" --cluster "${cluster_name}" --force-new-deployment || \
+    warning "Failed to restart service \"${service_name}\" in cluster \"${cluster_name}\"."
+done

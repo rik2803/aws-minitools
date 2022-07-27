@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+set -e
+set -o pipefail
+
+source "./lib.bash"
+
 usage() {
   cat << EOF
     Message: ${1:-No details available}
