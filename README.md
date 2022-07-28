@@ -1,5 +1,22 @@
 # A bunch of one-shot scripts for AWS chores
 
+## `aws-ecs-change-service-instance-count`: Want to set instance count for all services to a certain number?
+
+The command `aws-ecs-change-service-instance-count` sets the instance count of all services to a given number. The default
+value for `instancecount` is 1.
+
+Useful when you want to stop all tasks in an ECS cluster. Less useful if you want to restore the instance count, especially if
+not all services had the same instance count. :-)
+
+
+```
+aws-ecs-change-service-instance-count <clustername>
+```
+
+```
+aws-ecs-change-service-instance-count <clustername> 0
+```
+
 ## `aws-restart-all-services`: Perform a forced deployment on all services in a given cluster
 
 ```bash
