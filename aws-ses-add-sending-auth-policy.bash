@@ -3,9 +3,6 @@
 set -e
 set -o pipefail
 
-source "./lib.bash"
-
-
 dirname=$(dirname ${0})
 . ${dirname}/./lib.bash
 

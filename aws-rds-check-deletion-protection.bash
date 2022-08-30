@@ -3,7 +3,8 @@
 set -e
 set -o pipefail
 
-source "./lib.bash"
+dirname=$(dirname ${0})
+. ${dirname}/./lib.bash
 
 info "Checking DB Instances"
 aws rds describe-db-instances --query 'DBInstances[?!DeletionProtection].[DBInstanceIdentifier]' --output text | \
