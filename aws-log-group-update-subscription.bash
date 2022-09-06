@@ -18,9 +18,9 @@ for loggroup in $(aws logs  describe-log-groups --query 'logGroups[*].[logGroupN
     info "    Filter: ${filter}"
     info "    Delete existing subscription filter ..."
     aws logs delete-subscription-filter --log-group-name "${loggroup}" --filter-name "${filter}"
-    info "    Adding new subscription filter for lambda ${lambda_arn}"
-    aws logs put-subscription-filter --log-group-name "${loggroup}" --destination-arn "${lambda_arn}" --filter-name "SubscriptionFilter" --filter-pattern ""
   done
+  info "    Adding new subscription filter for lambda ${lambda_arn}"
+  aws logs put-subscription-filter --log-group-name "${loggroup}" --destination-arn "${lambda_arn}" --filter-name "SubscriptionFilter" --filter-pattern ""
   info "Loggroup (end): ${loggroup}"
 done
 
