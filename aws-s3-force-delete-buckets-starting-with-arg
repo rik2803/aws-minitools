@@ -1,0 +1,30 @@
+#! /usr/bin/env bash
+
+set -e
+set -o pipefail
+
+dirname=$(dirname ${0})
+. ${dirname}/./lib.bash
+
+usage() {
+  fail "
+    Delete (forcibly, i.e. removing all content) all S3 buckets in the account
+    whose names start with the first argument passed to this script.
+
+    This will fail when object versioning is enabled and versions still exist. If
+    this is the case and you still wish to delete the bucket, remove all versions
+    first.
+
+    Message:
+      ${1:-No details available}
+    Usage:
+      ${0} string"
+}
+
+[[ -z ${1} ]] && { usage "First argument should be a string"; exit 1; }
+
+buckets=$(aws s3api list-buckets --query "Buckets[]|[?starts_with(Name, '${1}')].Name" --output text)
+
+for bucket in ${buckets}; do
+  aws s3 rb --force "s3://${bucket}"
+done
